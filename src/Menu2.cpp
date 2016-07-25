@@ -5,6 +5,9 @@ Menu2::Menu2() {
 
 }
 
+/**
+ * External method used by the emergency stop function
+ **/
 void Menu2::stop() {
 	outputState = 0;
 	if(ts->curmenu == 1) {
@@ -12,6 +15,9 @@ void Menu2::stop() {
 	}
 }
 
+/**
+ * Draw the button for manual activation
+ **/
 void Menu2::drawManualButton() {
   if(manualActive) {
 	  ts->tft.fillRect(30,150,180,40,highlightColor);
@@ -26,6 +32,9 @@ void Menu2::drawManualButton() {
   }
 }
 
+/**
+ * Draw the bulk of the interface
+ **/
 void Menu2::drawFrame() {
   drawTitle("Ch2");
 
@@ -39,12 +48,15 @@ void Menu2::drawFrame() {
 
   drawManualButton();
   
+  // Sidebar 
   ts->tft.drawLine(240, 20, 240, maxY, textColor);
 
+  // Sidebar arrows
   for(char i=0;i<4;i++) {
     drawArrow(i, textColor);
   }
 
+  // Line between arrows
   ts->tft.fillRect(255, 128, 50, 4, shadeColor);
 
   drawButtons();
@@ -52,6 +64,9 @@ void Menu2::drawFrame() {
   drawBackButton();
 }
 
+/**
+ * Handle input for a touched arrow button (value change)
+ **/
 void Menu2::touchArrow(char index) {
   signed char mod;
   signed short int tmpmod;
@@ -103,6 +118,9 @@ void Menu2::touchArrow(char index) {
   wastouched[index]++;
 }
 
+/**
+ * On button at the botton of the screen, enable output.
+ **/
 void Menu2::touchOn() {
   if (outputState == 0) {
     outputState = 1;
@@ -111,6 +129,9 @@ void Menu2::touchOn() {
   }
 }
 
+/**
+ * Off button at the botton of the screen, disable output.
+ **/
 void Menu2::touchOff() {
   if (outputState == 1) {
     outputState = 0;
@@ -119,6 +140,9 @@ void Menu2::touchOff() {
   }
 }
 
+/**
+ * Draw On/Off buttons at the bottom of the screen in their current state
+ **/
 void Menu2::drawButtons() {
   ts->tft.fillRect(0, 200, 120, 40, redColor);
   ts->tft.fillRect(120, 200, 120, 40, greenColor);
@@ -138,12 +162,18 @@ void Menu2::drawButtons() {
   }
 }
 
+/**
+ * Draw selection arrow for currently highlighted item
+ **/
 void Menu2::drawSelector() {
   char index = selected;
   ts->tft.fillRect(220, 25, 19, 170, 0);
   ts->tft.drawTriangle(220, 55 + (index * 55), 235, 65 + (index * 55), 235, 45 + (index * 55), textColor);
 }
 
+/**
+ * Update the duty value on screen
+ **/
 void Menu2::drawDuty() {
   char tmp[4];
   ts->tft.setTextColor(textColor);
@@ -154,6 +184,9 @@ void Menu2::drawDuty() {
   oldduty = duty;
 }
 
+/**
+ * Update the interval value on screen
+ **/
 void Menu2::drawInterval() {
   char tmp[5];
   ts->tft.setTextColor(textColor);
@@ -164,6 +197,9 @@ void Menu2::drawInterval() {
   oldinterval = interval;
 }
 
+/**
+ * Update the period value on screen
+ **/
 void Menu2::drawPeriod() {
   char tmp[5];
   ts->tft.setTextColor(textColor);
@@ -174,12 +210,16 @@ void Menu2::drawPeriod() {
   oldperiod = period;
 }
 
+/**
+ * Main input handler
+ **/
 void Menu2::loop(TS_Point p) {
 	uint16 calcX, calcY;
 
   unsigned long now = millis();
   
   if (p.z > 200) {
+	// Touched
     calcX = (p.y / 10) - 25;
     calcY = 240 - ((p.x / 14) - 25);
 

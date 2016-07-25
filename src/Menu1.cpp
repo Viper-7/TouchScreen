@@ -52,7 +52,7 @@ void Menu1::drawFrame() {
 }
 
 /**
- * Handle input for a touched arrow button
+ * Handle input for a touched arrow button (value change)
  **/
 void Menu1::touchArrow(char index) {
   signed char mod;
@@ -223,6 +223,7 @@ void Menu1::loop(TS_Point p) {
   unsigned long now = millis();
   
   if (p.z > 200) {
+	// Touched
     calcX = (p.y / 10) - 25;
     calcY = 240 - ((p.x / 14) - 25);
 

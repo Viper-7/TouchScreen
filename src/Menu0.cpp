@@ -71,6 +71,7 @@ void Menu0::loop(TS_Point p) {
   char oldhighlight;
   
   if (p.z > 200) {
+	// Touched
     calcX = (p.y / 10) - 25;
     calcY = 240 - ((p.x / 14) - 25);
 
