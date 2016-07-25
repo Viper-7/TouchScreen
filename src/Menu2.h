@@ -30,8 +30,8 @@ class Menu2 : public Menu {
 		uint16 oldperiod = 0;
 		uint16 oldduty = 100;
 		
-		char manualActive = 0;
-		unsigned long manualDisable = 0;
+		char manualActive = 0;						// Manual button current state
+		unsigned long manualDisable = 0;		// Timer for when to release the manual button (delayed action)
 };
 
 #endif

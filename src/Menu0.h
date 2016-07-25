@@ -12,6 +12,8 @@ class Menu0 : public Menu {
 			drawButtons(),
 			drawFrame(),
 			loop(TS_Point p);
+
+		char highlightButton = 0;				// Currently lit menu item
 			
 };
 

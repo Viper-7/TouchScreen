@@ -26,16 +26,15 @@ class Menu {
 		static const uint16 redColor = ILI9341_RED;
 		static const uint16 greenColor = ILI9341_GREEN;
 
-		static const char margin = 0;
-		static const char lineHeight = 20;
-		static const uint16 maxX = 320;
-		static const uint16 maxY = 240;
+		static const char margin = 0;		// Margin between edge of screen and border
+		static const char lineHeight = 20;	// Height of title & status bar
+		static const uint16 maxX = 320;	// Screen X
+		static const uint16 maxY = 240;	// Screen Y
 
-		char wastouched[4] = {0,0,0,0};
-		char outputState = 0;
-		char selected = 0;
-		char oldselection = 4;
-		char highlightButton = 0;
+		char wastouched[4] = {0,0,0,0};	// Used for the up/down arrows on most menus
+		char outputState = 0;					// Current output status
+		char selected = 0;							// Index of currently selected value (duty/interval/period)
+		char oldselection = 4;					// Temporary holder of last selected value
 };
 
 #endif
