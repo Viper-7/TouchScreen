@@ -44,8 +44,8 @@ void Menu0::drawButtons() {
 }
 
 /**
- * Draw the frame of the interface. Don't use the drawTitle helper here because that accounts for the back button 
- * which will not appear on this screen.
+ * Draw the frame of the interface.
+ * Don't use the drawTitle helper here because leaves room for the back button which will not appear on this screen.
  **/
 void Menu0::drawFrame() {
   char margin2 = margin * 2;
@@ -135,14 +135,7 @@ void Menu0::loop(TS_Point p) {
 			case 6:
 			  ts->setMenu(6);
 			  break;
-			default:
-			  highlightButton = 0;
-			  drawButtons();
-			  break;
 		  }
-		} else {
-		  highlightButton = 0;
-		  drawButtons();
 		}
     }
   }
