@@ -16,6 +16,9 @@ void Menu::touchArrow(char index) {
 
 }
 
+/**
+ * Helper method to draw the up/down fast/slow input arrows on the right of most screens
+ **/
 void Menu::drawArrow(char index, uint16 color) {
   switch(index) {
     case 0:
@@ -35,6 +38,9 @@ void Menu::drawArrow(char index, uint16 color) {
   }
 }
 
+/**
+ * Helper method to draw the basic frame and title bar of the interface
+ **/
 void Menu::drawTitle(char* content) {
   uint16 menuColor;
   char margin2 = margin * 2;
@@ -48,6 +54,9 @@ void Menu::drawTitle(char* content) {
   ts->tft.drawCentreString(content, 30 + (maxX / 2), 2, 2);
 }
 
+/**
+ * Helper method to draw the back button on all screens except the home screen
+ **/
 void Menu::drawBackButton() {
   uint16 buttonColor = ILI9341_YELLOW;
   ts->tft.fillRect(0,0,70,20,buttonColor);

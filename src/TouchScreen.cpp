@@ -15,18 +15,25 @@ Menu5 menu5 = Menu5();
 Menu6 menu6 = Menu6();
 
 TouchScreen::TouchScreen() {
+
 }
 
 TouchScreen::~TouchScreen() {
 	
 }
 
+/**
+ * Stop all outputs immediately (emergency stop)
+ **/
 void TouchScreen::stopAll() {
 	menu1.stop();
 	menu2.stop();
 	menu3.stop();
 }
 
+/**
+ * Enable the backlight and pass a handle to the menus so they can update the screen
+ */
 void TouchScreen::begin() {
   // Load interval, duty & period
   Serial.begin(19200);
@@ -51,18 +58,26 @@ void TouchScreen::begin() {
   setMenu(0);
 }
 
+/**
+ * Main Loop
+ **/
 void TouchScreen::loop() {
 	unsigned long now = millis();
-	digitalWrite(TFT_CS, HIGH);
+	
+	// Fetch touch data
+	digitalWrite(TFT_CS, HIGH);		// Hack since the tft lib doesnt correctly de-assert CS when its not using the LCD
 	TS_Point p = ts.getPoint();
 	digitalWrite(TFT_CS, LOW);
-	TS_Point d = TS_Point(0,0,0);
+	TS_Point d = TS_Point(0,0,0);	// Dummy point with 0 pressure to allow buttonUp events to fire manually
 	
+	// Emergency Stop function. If the display is dimmed, and we're on the home screen, pass the touch through to 
+	// the menu before anything else, since it wont normally be called until the display reaches full brightness.
 	if(dimstate == 1 && curmenu == 0 && p.z > 20) {
 		menu0.loop(p);
 		menu0.loop(d);
 	}
 	
+	// Detect recent touches (even gentle ones) to delay the automatic backlight
 	if (p.z > 20) {
 		dimtime = now + 60000;
 		if(dimstate == 1) {
@@ -75,6 +90,7 @@ void TouchScreen::loop() {
 		}
 	}
 	
+	// Back button is in the top left of all screens except the home menu
 	if(curmenu > 0) {
 		uint16 calcX, calcY;
 
@@ -89,6 +105,7 @@ void TouchScreen::loop() {
 		}
 	}
 	
+	// Process each menu's input handler if it's active
 	switch(curmenu) {
 		case 0:
 			menu0.loop(p);
@@ -110,18 +127,21 @@ void TouchScreen::loop() {
 			break;
 	}
 	
-  if (p.z < 200) {
-    if(now > dimtime && dimstate == 0) {
-      for(int i=brightness;i>minbrightness;i--) {
-        analogWrite(PB9, 255-i);
-        delay(10);
-      }
-      dimstate = 1;
-    }
-  }
-	
+	// If the screen isn't being touched, check if we should dim the display
+	if (p.z < 200) {
+		if(now > dimtime && dimstate == 0) {
+			for(int i=brightness;i>minbrightness;i--) {
+				analogWrite(PB9, 255-i);
+				delay(10);
+			}
+			dimstate = 1;
+		}
+	}
 }
 
+/**
+ * Update the status bar on the home screen, code located here because it uses information from every screen.
+ **/
 void TouchScreen::updateStatus() {
   char tmp[55];
   
@@ -131,6 +151,9 @@ void TouchScreen::updateStatus() {
   tft.drawRawString(tmp, 25, 225, 1);
 }
 
+/**
+ * Change menu to the selected index and redraw the screen
+ **/
 void TouchScreen::setMenu(char menu) {
   tft.fillScreen(ILI9341_BLACK);
 
