@@ -5,6 +5,9 @@ Menu0::Menu0() {
 
 }
 
+/**
+ * Draw the tiles on the home screen
+ **/
 void Menu0::drawButtons() {
   uint16 menuColor;
 
@@ -40,6 +43,10 @@ void Menu0::drawButtons() {
   ts->tft.drawCentreString("Setup",265,150,4);
 }
 
+/**
+ * Draw the frame of the interface. Don't use the drawTitle helper here because that accounts for the back button 
+ * which will not appear on this screen.
+ **/
 void Menu0::drawFrame() {
   char margin2 = margin * 2;
   uint16 menuColor;
@@ -55,6 +62,9 @@ void Menu0::drawFrame() {
   drawButtons();
 }
 
+/**
+ * Input handler for the home screen. Make tiles glow on touch, and navigate to the selected tile when the touch is released
+ **/ 
 void Menu0::loop(TS_Point p) {
   uint16 calcX, calcY;
   unsigned long now = millis();
@@ -64,8 +74,11 @@ void Menu0::loop(TS_Point p) {
     calcX = (p.y / 10) - 25;
     calcY = 240 - ((p.x / 14) - 25);
 
+	// Ignore presses on the title bar
     if(calcY < 40 || calcY > 200) return;
-    if(calcY < 120) {
+    
+	if(calcY < 120) {
+	  // Top row
       oldhighlight = highlightButton;
       if(calcX < 105) {
         highlightButton = 1;
@@ -75,6 +88,7 @@ void Menu0::loop(TS_Point p) {
         highlightButton = 3;
       }
     } else {
+	  // Bottom Row
       if(calcX < 105) {
         highlightButton = 4;
       } else if(calcX < 210) {
@@ -83,6 +97,8 @@ void Menu0::loop(TS_Point p) {
         highlightButton = 6;
       }
     }
+	
+	// Redraw the tiles if needed
     if(oldhighlight != highlightButton) {
         drawButtons();
     }
@@ -90,13 +106,18 @@ void Menu0::loop(TS_Point p) {
     if(highlightButton > 0) {
       oldhighlight = highlightButton;
       highlightButton = 0;
-      if(oldhighlight == 4) {
+      
+	  // If we detected a stop press, action it immediately.
+	  if(oldhighlight == 4) {
 		  Serial.write("STOP\n");
 		  ts->stopAll();
 		  highlightButton = 0;
 		  drawButtons();
 	  }
+	  
+	  // Ignore the touch that woke the display
 	  if(ts->dimstate == 0) {
+		  // Navigate to the selected menu
 		  switch(oldhighlight) {
 			case 1:
 			  ts->setMenu(1);
